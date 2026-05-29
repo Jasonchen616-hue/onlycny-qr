@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>二维码生成器</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="../web-tools/legal.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="page-header">
+        <h1 class="page-title">二维码生成器</h1>
+        <p class="page-desc">输入文本或网址，生成二维码并下载图片。</p>
+      </header>
+
+      <main class="panel">
+        <div class="tool-layout">
+          <div class="tool-form">
+            <section class="block">
+              <label class="block-label" for="qr-text">内容</label>
+              <textarea
+                id="qr-text"
+                class="input-text"
+                rows="5"
+                placeholder="网址、文字或编号"
+                spellcheck="false"
+              ></textarea>
+            </section>
+
+            <section class="block">
+              <h2 class="block-label">参数</h2>
+              <div class="params-grid">
+                <div class="field">
+                  <label class="field-label" for="qr-size">尺寸</label>
+                  <select id="qr-size" class="field-control">
+                    <option value="200">200 px</option>
+                    <option value="300" selected>300 px</option>
+                    <option value="400">400 px</option>
+                    <option value="500">500 px</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="qr-ec">纠错等级</label>
+                  <select id="qr-ec" class="field-control">
+                    <option value="L">L（约 7%）</option>
+                    <option value="M" selected>M（约 15%）</option>
+                    <option value="Q">Q（约 25%）</option>
+                    <option value="H">H（约 30%）</option>
+                  </select>
+                </div>
+                <div class="field field--color">
+                  <label class="field-label" for="qr-fg">前景色</label>
+                  <div class="color-row">
+                    <input type="color" id="qr-fg" class="color-input" value="#000000" />
+                    <input type="text" id="qr-fg-text" class="color-text" value="#000000" maxlength="7" />
+                  </div>
+                </div>
+                <div class="field field--color">
+                  <label class="field-label" for="qr-bg">背景色</label>
+                  <div class="color-row">
+                    <input type="color" id="qr-bg" class="color-input" value="#ffffff" />
+                    <input type="text" id="qr-bg-text" class="color-text" value="#ffffff" maxlength="7" />
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="block">
+              <h2 class="block-label">样式</h2>
+              <div class="params-grid">
+                <div class="field">
+                  <label class="field-label" for="qr-module-style">码点样式</label>
+                  <select id="qr-module-style" class="field-control">
+                    <option value="square" selected>方块</option>
+                    <option value="dot">圆点</option>
+                    <option value="rounded">圆角方块</option>
+                    <option value="gap">小方块留缝</option>
+                    <option value="grid9">九宫格点阵</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="qr-finder-style">定位点样式</label>
+                  <select id="qr-finder-style" class="field-control">
+                    <option value="standard" selected>标准方框</option>
+                    <option value="rounded">圆角方框</option>
+                    <option value="circle">圆形</option>
+                    <option value="simple">简化方框</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="qr-quiet-zone">边距（模块）</label>
+                  <select id="qr-quiet-zone" class="field-control">
+                    <option value="0">0</option>
+                    <option value="2">2</option>
+                    <option value="4" selected>4</option>
+                    <option value="8">8</option>
+                  </select>
+                </div>
+                <div class="field field--checkbox">
+                  <label class="checkbox-label">
+                    <input type="checkbox" id="qr-show-border" />
+                    显示边框
+                  </label>
+                </div>
+              </div>
+            </section>
+
+            <div class="actions" role="group" aria-label="操作">
+              <button type="button" class="btn btn-primary" id="btn-generate">生成二维码</button>
+              <button type="button" class="btn btn-default" id="btn-png" disabled>下载 PNG</button>
+              <button type="button" class="btn btn-default" id="btn-svg" disabled>下载 SVG</button>
+              <button type="button" class="btn btn-default" id="btn-clear">清空</button>
+            </div>
+
+            <p class="hint" id="hint" role="status" aria-live="polite" hidden></p>
+          </div>
+
+          <section class="tool-preview" aria-labelledby="preview-label">
+            <h2 id="preview-label" class="block-label">预览</h2>
+            <div class="preview-box" id="preview-box">
+              <div class="preview-empty" id="preview-empty">
+                <p>暂无二维码</p>
+              </div>
+              <div class="preview-result" id="preview-result" hidden>
+                <canvas id="qr-canvas" aria-label="二维码预览"></canvas>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+    <footer class="site-legal-footer" role="contentinfo">
+      <nav class="site-legal-footer__nav" aria-label="网站信息">
+        <a href="../web-tools/about.html">关于我们</a><span class="sep" aria-hidden="true">｜</span>
+        <a href="../web-tools/privacy.html">隐私政策</a><span class="sep" aria-hidden="true">｜</span>
+        <a href="../web-tools/disclaimer.html">免责声明</a><span class="sep" aria-hidden="true">｜</span>
+        <a href="../web-tools/terms.html">使用条款</a><span class="sep" aria-hidden="true">｜</span>
+        <a href="../web-tools/contact.html">联系我们</a>
+      </nav>
+    </footer>
+
+
+    <script src="./lib/qrcode.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
